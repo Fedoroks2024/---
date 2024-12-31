@@ -16,11 +16,11 @@
             min-height: 100vh;
             background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
             margin: 0;
-            padding: 20px; /* Добавлен padding для отступов на маленьких экранах */
+            padding: 20px;
             box-sizing: border-box;
         }
 
-         .player {
+        .player {
             background-color: #fff;
             border-radius: 10px;
             padding: 20px;
@@ -28,7 +28,7 @@
             text-align: center;
             margin-bottom: 20px;
             max-width: 350px;
-            width: 100%; /* Ширина плеера 100% для адаптивности */
+            width: 100%;
             box-sizing: border-box;
         }
 
@@ -110,7 +110,7 @@
             height: 100%;
             object-fit: cover;
         }
-         .swiper-slide:nth-child(3n) {
+        .swiper-slide:nth-child(3n) {
             background-color: rgb(10, 184, 111);
         }
         .swiper-slide:nth-child(6n) {
@@ -137,7 +137,7 @@
         .track-list {
             text-align: left;
             margin-top: 20px;
-             max-height: 200px;
+            max-height: 200px;
             overflow-y: auto;
         }
 
@@ -158,7 +158,7 @@
             font-weight: bold;
         }
 
-         /* Адаптивность для маленьких экранов */
+        /* Адаптивность для маленьких экранов */
         @media (max-width: 480px) {
             .swiper {
                 width: 200px;
@@ -199,7 +199,7 @@
             <div class="swiper-slide" data-hash="slide7" data-track="https://new-years-songs.onrender.com/Music/4R799-TA4ZH.mp3">
                 <img src="./Image/4R799-TA4ZH.png" alt="Slide 7"/>
             </div>
-             <div class="swiper-slide" data-hash="slide8" data-track="https://new-years-songs.onrender.com/Music/S6Q8Y-M1H2P.mp3">Slide 8</div>
+            <div class="swiper-slide" data-hash="slide8" data-track="https://new-years-songs.onrender.com/Music/S6Q8Y-M1H2P.mp3">Slide 8</div>
             <div class="swiper-slide" data-hash="slide9" data-track="https://new-years-songs.onrender.com/Music/T3Z5B-Q9L2R.mp3">Slide 9</div>
             <div class="swiper-slide" data-hash="slide10" data-track="https://new-years-songs.onrender.com/Music/V9N7C-J4X6S.mp3">Slide 10</div>
             <div class="swiper-slide" data-hash="slide11" data-track="https://new-years-songs.onrender.com/Music/W4F1G-K8H9P.mp3">Slide 11</div>
@@ -211,7 +211,7 @@
             <div class="swiper-slide" data-hash="slide17" data-track="https://new-years-songs.onrender.com/Music/C1Y9M-Q4L2K.mp3">Slide 17</div>
             <div class="swiper-slide" data-hash="slide18" data-track="https://new-years-songs.onrender.com/Music/D6R8Z-S3X9C.mp3">Slide 18</div>
             <div class="swiper-slide" data-hash="slide19" data-track="https://new-years-songs.onrender.com/Music/E5V3B-J7N1P.mp3">Slide 19</div>
-             <div class="swiper-slide" data-hash="slide20" data-track="https://new-years-songs.onrender.com/Music/F4C2K-G9H7Y.mp3">Slide 20</div>
+            <div class="swiper-slide" data-hash="slide20" data-track="https://new-years-songs.onrender.com/Music/F4C2K-G9H7Y.mp3">Slide 20</div>
         </div>
     </div>
     <audio id="audio" preload="metadata"></audio>
@@ -224,7 +224,7 @@
     </div>
     <input type="range" id="progress" value="0" max="100">
     <div class="track-list">
-         <a href="#" data-hash="slide1">Кабы не было зимы</a>
+        <a href="#" data-hash="slide1">Кабы не было зимы</a>
         <a href="#" data-hash="slide2">Зимняя сказка</a>
         <a href="#" data-hash="slide3">Новый год</a>
         <a href="#" data-hash="slide4">Что такое новый год?</a>
@@ -283,7 +283,7 @@
 
     // Сброс трека по окончанию
     audio.addEventListener('ended', () => {
-         playPauseIcon.classList.remove('fa-pause');
+        playPauseIcon.classList.remove('fa-pause');
         playPauseIcon.classList.add('fa-play');
         progress.value = 0;
         audio.currentTime = 0;
@@ -300,83 +300,85 @@
         swiper.slideNext();
         updateTrackBySlide();
     }
+
     // Установка активного трека в списке
-     function setActiveTrack(track) {
-         trackLinks.forEach(link => link.classList.remove('active'));
-            if(track){
-                 track.classList.add('active');
-            }
+    function setActiveTrack(track) {
+        trackLinks.forEach(link => link.classList.remove('active'));
+        if (track) {
+            track.classList.add('active');
+        }
     }
 
     // Обновление трека при переключении слайда
-   function updateTrackBySlide() {
+    function updateTrackBySlide() {
         const activeSlide = swiper.slides[swiper.activeIndex];
         if (!activeSlide) return;
 
         const trackUrl = activeSlide.dataset.track;
         const hash = activeSlide.dataset.hash;
 
-         if(trackUrl){
+        if (trackUrl) {
             if (trackUrl !== audio.src) {
                 audio.src = trackUrl;
+                audio.currentTime = 0;
+                progress.value = 0;
                 audio.play();
             } else if (audio.paused) {
                 audio.play();
             }
-                currentTrack = Array.from(trackLinks).find(link => link.dataset.hash === hash);
-                 setActiveTrack(currentTrack);
-                  playPauseIcon.classList.remove('fa-play');
-                  playPauseIcon.classList.add('fa-pause');
-         }else{
-              setActiveTrack(null)
-         }
+             currentTrack = Array.from(trackLinks).find(link => link.dataset.hash === hash);
+                setActiveTrack(currentTrack);
+                playPauseIcon.classList.remove('fa-play');
+                playPauseIcon.classList.add('fa-pause');
+        } else {
+            setActiveTrack(null);
+        }
     }
 
 
     // Обработка кликов по списку треков
-     trackLinks.forEach(link => {
+    trackLinks.forEach(link => {
         link.addEventListener('click', function (event) {
             event.preventDefault();
             const hash = this.dataset.hash;
             swiper.slideTo(Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === hash))
-             updateTrackBySlide();
+            updateTrackBySlide();
         });
     });
 
     // Обработчик изменения hash
     window.addEventListener('hashchange', function() {
-         const currentHash = window.location.hash.substring(1) || 'slide1';
-         const slideIndex = Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === currentHash);
-         if(slideIndex !== -1) {
-             swiper.slideTo(slideIndex);
-             updateTrackBySlide();
+        const currentHash = window.location.hash.substring(1) || 'slide1';
+        const slideIndex = Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === currentHash);
+        if (slideIndex !== -1) {
+            swiper.slideTo(slideIndex);
+            updateTrackBySlide();
         }
     });
 
-   // Инициализация Swiper и начальная настройка
+    // Инициализация Swiper и начальная настройка
     document.addEventListener("DOMContentLoaded", function() {
-       swiper = new Swiper(".mySwiper", {
+        swiper = new Swiper(".mySwiper", {
             effect: "cards",
-             grabCursor: true,
+            grabCursor: true,
             pagination: {
-               el: ".swiper-pagination",
+                el: ".swiper-pagination",
                 clickable: true,
             },
             hashNavigation: {
                 watchState: true,
             },
-       });
+        });
         if (window.location.hash) {
             const currentHash = window.location.hash.substring(1);
             const slideIndex = Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === currentHash);
-            if(slideIndex !== -1){
-               swiper.slideTo(slideIndex);
+            if (slideIndex !== -1) {
+                swiper.slideTo(slideIndex);
                 updateTrackBySlide();
-           }
-         }else{
+            }
+        } else {
             updateTrackBySlide();
         }
-
     });
 </script>
 </body>
