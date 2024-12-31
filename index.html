@@ -58,7 +58,7 @@
         }
 
         /* Стили для ползунка прогресса */
-         input[type="range"] {
+        input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
             max-width: 300px;
@@ -69,14 +69,6 @@
             margin-top: 10px;
         }
 
-        /* Стиль для линии заполнения в WebKit-браузерах */
-        input[type="range"]::-webkit-slider-runnable-track {
-            background: #ddd;
-            height: 5px;
-            border-radius: 5px;
-            position: relative;
-        }
-
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -85,16 +77,6 @@
             border-radius: 50%;
             background: #4CAF50;
             cursor: pointer;
-            position: relative;
-            z-index: 2; /* Чтобы ползунок был поверх линии */
-        }
-
-        /* Стиль для линии заполнения в Firefox */
-        input[type="range"]::-moz-range-track {
-            background: #ddd;
-            height: 5px;
-            border-radius: 5px;
-            position: relative;
         }
 
         input[type="range"]::-moz-range-thumb {
@@ -103,32 +85,7 @@
             border-radius: 50%;
             background: #4CAF50;
             cursor: pointer;
-            position: relative;
-            z-index: 2;  /* Чтобы ползунок был поверх линии */
         }
-         /* Стиль для линии заполнения */
-         input[type="range"]::-webkit-slider-runnable-track::before{
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            width: var(--range-progress, 0%);
-         }
-
-         input[type="range"]::-moz-range-track::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background-color: #4CAF50;
-            border-radius: 5px;
-             width: var(--range-progress, 0%);
-         }
-
 
         /* Стили Swiper */
         .swiper {
@@ -145,7 +102,7 @@
             font-size: 22px;
             font-weight: bold;
             color: #fff;
-            background-color: #ccc;
+            background-color: #ccc; /* Запасной цвет для слайдов без картинок */
         }
 
         .swiper-slide img {
@@ -201,7 +158,7 @@
             font-weight: bold;
         }
 
-         /* Адаптивность для маленьких экранов */
+        /* Адаптивность для маленьких экранов */
         @media (max-width: 480px) {
             .swiper {
                 width: 200px;
@@ -314,25 +271,22 @@
 
     // Обновление прогресса
     audio.addEventListener('timeupdate', () => {
-         const percentage = (audio.currentTime / audio.duration) * 100;
-          progress.value = percentage;
-        progress.style.setProperty('--range-progress', `${percentage}%`);
+        const percentage = (audio.currentTime / audio.duration) * 100;
+        progress.value = percentage;
     });
 
     // Перемотка трека
     progress.addEventListener('input', () => {
         const seekTime = (progress.value / 100) * audio.duration;
         audio.currentTime = seekTime;
-        progress.style.setProperty('--range-progress', `${progress.value}%`);
     });
 
     // Сброс трека по окончанию
     audio.addEventListener('ended', () => {
-         playPauseIcon.classList.remove('fa-pause');
+        playPauseIcon.classList.remove('fa-pause');
         playPauseIcon.classList.add('fa-play');
         progress.value = 0;
         audio.currentTime = 0;
-        progress.style.setProperty('--range-progress', `0%`);
     });
 
     // Переход к предыдущему слайду
@@ -346,86 +300,85 @@
         swiper.slideNext();
         updateTrackBySlide();
     }
+
     // Установка активного трека в списке
-     function setActiveTrack(track) {
-         trackLinks.forEach(link => link.classList.remove('active'));
-            if(track){
-                 track.classList.add('active');
-            }
+    function setActiveTrack(track) {
+        trackLinks.forEach(link => link.classList.remove('active'));
+        if (track) {
+            track.classList.add('active');
+        }
     }
 
     // Обновление трека при переключении слайда
-   function updateTrackBySlide() {
+    function updateTrackBySlide() {
         const activeSlide = swiper.slides[swiper.activeIndex];
         if (!activeSlide) return;
 
         const trackUrl = activeSlide.dataset.track;
         const hash = activeSlide.dataset.hash;
 
-         if(trackUrl){
-             if (trackUrl !== audio.src) {
-                 audio.src = trackUrl;
+        if (trackUrl) {
+            if (trackUrl !== audio.src) {
+                audio.src = trackUrl;
                 audio.currentTime = 0;
-                 progress.value = 0;
-                 progress.style.setProperty('--range-progress', `0%`);
+                progress.value = 0;
                 audio.play();
             } else if (audio.paused) {
-                  audio.play();
+                audio.play();
             }
              currentTrack = Array.from(trackLinks).find(link => link.dataset.hash === hash);
-                 setActiveTrack(currentTrack);
-                  playPauseIcon.classList.remove('fa-play');
-                  playPauseIcon.classList.add('fa-pause');
-         }else{
-              setActiveTrack(null)
-         }
+                setActiveTrack(currentTrack);
+                playPauseIcon.classList.remove('fa-play');
+                playPauseIcon.classList.add('fa-pause');
+        } else {
+            setActiveTrack(null);
+        }
     }
 
 
     // Обработка кликов по списку треков
-     trackLinks.forEach(link => {
+    trackLinks.forEach(link => {
         link.addEventListener('click', function (event) {
             event.preventDefault();
             const hash = this.dataset.hash;
             swiper.slideTo(Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === hash))
-             updateTrackBySlide();
+            updateTrackBySlide();
         });
     });
 
     // Обработчик изменения hash
     window.addEventListener('hashchange', function() {
-         const currentHash = window.location.hash.substring(1) || 'slide1';
-         const slideIndex = Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === currentHash);
-         if(slideIndex !== -1) {
-             swiper.slideTo(slideIndex);
-             updateTrackBySlide();
+        const currentHash = window.location.hash.substring(1) || 'slide1';
+        const slideIndex = Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === currentHash);
+        if (slideIndex !== -1) {
+            swiper.slideTo(slideIndex);
+            updateTrackBySlide();
         }
     });
 
-   // Инициализация Swiper и начальная настройка
+    // Инициализация Swiper и начальная настройка
     document.addEventListener("DOMContentLoaded", function() {
-       swiper = new Swiper(".mySwiper", {
+        swiper = new Swiper(".mySwiper", {
             effect: "cards",
-             grabCursor: true,
+            grabCursor: true,
             pagination: {
-               el: ".swiper-pagination",
+                el: ".swiper-pagination",
                 clickable: true,
             },
             hashNavigation: {
                 watchState: true,
             },
-       });
+        });
         if (window.location.hash) {
             const currentHash = window.location.hash.substring(1);
             const slideIndex = Array.from(swiper.slides).findIndex(slide => slide.dataset.hash === currentHash);
-            if(slideIndex !== -1){
-               swiper.slideTo(slideIndex);
+            if (slideIndex !== -1) {
+                swiper.slideTo(slideIndex);
                 updateTrackBySlide();
-           }
-         }else{
+            }
+        } else {
             updateTrackBySlide();
         }
-
     });
 </script>
 </body>
